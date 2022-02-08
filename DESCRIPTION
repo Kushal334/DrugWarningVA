@@ -1,0 +1,24 @@
+Package: DrugWarningVA
+Title: A Package for drug warning visualization and analysis
+Version: 0.0.0.9000
+Authors@R: person("Yatong", "Chen", email = "yatong@stanford.com")
+Authors@R: person("Yiwen", "Guo", email = "yguo46@stanford.com")
+Description: A Package that visualizes and analyzes drug warning. It includes several datasets and several plotting functions.
+Depends: R (>= 3.4.3)
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+Imports: RColorBrewer,
+    wordcloud,
+    stringr,
+    dplyr,
+    stats,
+    magrittr,
+    tidyr,
+    tm,
+    scales,
+    ggplot2
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

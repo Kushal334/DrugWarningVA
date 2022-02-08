@@ -1,18 +1,31 @@
-## Summary for DrugWarningVA package 1.0
-#### Author: Yiwen Guo, Yatong Chen
-#### Date: 3/20/2018
+---
+title: "Summary for DrugWarningVA package 1.0"
+author: "Yiwen Guo, Yatong Chen"
+date: "3/20/2018"
+output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 
-
-### Description of the problem
+## Description of the problem
 
 Medication plays an important role in people’s daily lives. Through this project, we want to better understand and analyze the warning sections in drug labels. From the official website of U.S. Food and Drug Administration (FDA), we downloaded related data. To begin with, we divided warning sections into three sub-sections: warnings, contraindications, and boxed warnings. For each of these three categories, we combined the words of all drugs and visualized the key words/phrases through generating word clouds. Then, we developed a language model which classified the tone of these key words into three categories: mild, moderate, and severe. After that, we analyzed the tone across different drug types. For instance, we found that drugs containing arsenicum album tend to have boxed warnings, which can be viewed as an indicator of potential danger of the drugs. Hence, we would classify the tone of drugs with arsenicum album as severe. Note that the project is slightly different from what we proposed earlier. The former focuses on warning sections in drug labels, whereas the latter puts more emphasis on the drug itself. 
 
+## Use cases
 
-Our package design is inspired by the OpenFDA Developer Challenge Option 2. OpenFDA is an Elasticsearch-based API that serves public FDA data about drugs, devices, and foods. The goal is to facilitate easy access to public data, to ensure the security of public FDA data, and ultimately to educate the public and save lives. The concept is to index high-value public-access data, format and document that data in developer and consumer-friendly standards, and make it available via a public-access portal that enables developers to quickly and easily use it in applications. 
-Further information about the challedge can be found here: https://open.fda.gov/update/an-open-challenge-to-tap-public-data/.
-
-#### First part: Visualization and comparison of keywords for different levels of warnings(wordcloud)
+# First part: Visualization and comparison of keywords for different levels of warnings(wordcloud)
 
 The user may wish to visualize the set of key words related to a particular type of warnings (boxed warnings, contraindications, and warnings), which also corresponds to the severe, moderate and mild levels. Then, he or she can call the corresponding function 'boxWarnWC(box_warning_data, keystrings)', 'contraWC(contraindications_data, keystrings)', or 'warningWC(warning_data, keystrings)'. Then, a word cloud of that type will be generated and presented to the user. 
 
@@ -22,27 +35,70 @@ Please refer to the following figures to see the results.
 
 
 
-#### Second part: Development of a Language Model classfiying the tone of keywords
+# Second part: Development of a Language Model classfiying the tone of keywords
 
 The user may want to know the tone of a particular word chosen from the key words set generated from the word cloud. Then, he can call the function 'langModelTable(box_warning_data,  contraindications_data, warning_data, keystrings)' to see all keywords' unnormalized probabilities of the three types of warnings; or he can also call the function 'languageModel(box_warning_data,  contraindications_data, warning_data, keystrings,"input_word")' with "input_word" replaced by his own chosen word. The function will then display probabilities of that word associated with each category of warnings. For instance, if the user calls languageModel(“coronary artery bypass”), the output shows that there is a  probability of 0.729947 that the word is severe, a probability of 0.2392389 that the word is moderate, and a probability of 0.03081411 that the word is mild. Please refer to the following tables for results.
 
 
 	
-#### Third part: Analysis of occurrences of boxed warnings in different ingredients of drugs
+# Third part: Analysis of occurrences of boxed warnings in different ingredients of drugs
 
 The user may want to know the tone of all kinds of ingredients -- namely how often does one particular ingredient appear in a box warning section, which can indicate the potential danger for it. Then, the user can call the function 'ingredientTable(generic_name, raw_box_warning_data)' to view the summary of frequency table for all frequenctly appeared ingredients that has at least appear three times in the box warning section. 
 
-#### Contributions of team members
+## Contributions of team members
 
-Yatong pre-processed data into usable forms and analyzed the tone across different drug types. 
-Yiwen worked on classifying key words into three categories. 
-Yatong and Yiwen collaborated on creating word clouds.
+Yatong pre-processed data into usable forms and analyzed the tone across different drug types. Yiwen worked on classifying key words into three categories. Yatong and Yiwen collaborated on creating word clouds.
+
+## Future work
+
+In addition to creating word cloud for each individual category, we can also compare and contrast boxed warnings, contraindications, and warnings by generating commonality and comparison cloud.  Also, we can generate tables containing basic information of a particular drug for query purposes. For the language model, instead of categorizing key words, we can train the given data and classify the user’s input texts into mild, moderate, and severe using unsupervised learning method like SVM etc.
+ 
+
+## Figures
+
+Figures for First Part: 
+```{r, fig.show='hold'}
+library(DrugWarningVA)
+boxWarnWC(box_warning_data, keystrings)
+fig.cap = "Word Cloud for key words/strings which apprears in the severe warning('box warning') section"
+```
+
+```{r, fig.show='hold'}
+contraWC(contraindications_data, keystrings)
+fig.cap = "Word Cloud for key words/strings which apprears in the moderate warning('contraindication') section"
+```
+
+```{r, fig.show='hold'}
+warningWC(warning_data, keystrings)
+fig.cap = "Word Cloud for key words/strings which apprears in the warning section"
+```
 
 
-#### Contact information
-If you have any questions, please contact Yatong at yatong@stanford.edu
+```{r, fig.show='hold'}
+visualizeLangModel(box_warning_data, contraindications_data, warning_data, keystrings)
+fig.cap = "comparison between keywords from different levels of warning"
+```
 
+Table for Second Part:
+```{r, fig.show='hold'}
+table = langModelTable(box_warning_data,  contraindications_data, warning_data, keystrings) 
+head(table)
+tail(table)
+fig.cap = "Unnormalized probabilities for keywords to be in different warning section"
+```
 
+```{r, fig.show='hold'}
+languageModel(box_warning_data,  contraindications_data, warning_data, keystrings,"coronary artery bypass")
+fig.cap = "Probabilities of 'coronary artery bypass' for three different tones(severe/moderate/mild)"
+```
+
+Table for Third Part:
+```{r, fig.show='hold'}
+table2 = ingredientTable(generic_name, raw_box_warning_data)
+head(table2)
+tail(table2)
+fig.cap = "Times for different ingredients to be contained/ not contained in a drug's box warnings section"
+```
 
 
 
